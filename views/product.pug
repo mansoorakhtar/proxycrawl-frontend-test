@@ -4,19 +4,58 @@ block vars
   - const title = 'Amazon Crawl';
   - const pageID = 'product';
 
+
+
 block eod
   script
     +loadModule('pages/product.js')
+  
+  script.
+    function onChangeProductImage(image) {
+      // remove active class
+      var elements = document.querySelectorAll(".active");
+      [].forEach.call(elements, function(element) {
+        element.classList.remove("active");
+      });
+      document.getElementById(image).classList.add("active");
+    }
 
 block content
-  main
-    div Write your content here
-    if error
+  if error
       p Ups there is an error, try again
       p= error
-    else
-      ul
-        li Check console output to see all available properties.
-        li= product.name
-        li= product.price
-        li= product.description
+  else
+    div.container
+      div.left-column
+        img(class='active' id=product.mainImage src=product.mainImage)
+        each image in product.images
+          img(src=image id=image) 
+      div.right-column
+        div.product-description
+          span= product.brand
+          h3= product.name
+          p= product.description.substring(200, 0)
+        div.product-configuration
+          div.product-color
+            div.color-choose
+              div
+                label
+                  input(type='radio' name='product-image' checked)
+                  img(src=product.mainImage class='product-image-thumbnail' onclick='onChangeProductImage("' + product.mainImage + '")')             
+                each image in product.images
+                  label
+                    input(type='radio' name='product-image' onclick='onChangeProductImage("' + image + '")')
+                    img(src=image class='product-image-thumbnail')
+          div.cable-config
+            h3 Product Details
+              div.cable-choose
+                each information in product.productInformation
+                  button !{information.name} !{information.value} 
+        div.product-price
+          span= product.price
+          a(href='#' class='cart-btn') Add to cart
+
+
+                
+
+         
